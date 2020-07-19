@@ -1,13 +1,28 @@
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/nurliman/Grasindo.API.Products/config"
+	"github.com/nurliman/Grasindo.API.Products/routes"
+
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
+)
+
+var err error
 
 func main() {
-	r := gin.Default()
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
-		})
-	})
-	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+
+	config.DB, err = gorm.Open("postgres", config.DBConfigBuilder())
+
+	if err != nil {
+		panic("Failed to connect to database!")
+	}
+
+	defer config.DB.Close()
+
+	config.DB.AutoMigrate()
+
+	router := routes.SetupRouter()
+
+	router.Run()
 }
