@@ -1,7 +1,7 @@
 package main
 
 import (
-	"net/http"
+	//"net"
 	"github.com/nurliman/Grasindo.API.Products/routes"
 
 	"github.com/kataras/iris/v12"
@@ -17,6 +17,12 @@ func main() {
 	})
 
 
-	server := &http.Server{Addr:"0.0.0.0:55551"}
-	app.Run(iris.Server(server))
+	// create any custom tcp listener, unix sock file or tls tcp listener.
+	// l, err := net.Listen("tcp4", "0.0.0.0:8080")
+	// if err != nil {
+	// 	panic(err)
+	// }
+
+	// use of the custom listener.
+	app.Listen("0.0.0.0:8080")
 }

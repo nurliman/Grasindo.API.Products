@@ -13,5 +13,4 @@ FROM debian:10.4-slim
 COPY --from=builder /go/bin /app
 ENTRYPOINT /app/Grasindo.API.Products
 LABEL Name=grasindo.api.products Version=0.0.1
-EXPOSE 55551
-RUN /app/Grasindo.API.Products
+EXPOSE 8080
