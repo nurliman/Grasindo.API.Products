@@ -9,7 +9,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-func startGRPC() {
+func startGRPCServer() {
 
 	fmt.Println("Products Service starting")
 

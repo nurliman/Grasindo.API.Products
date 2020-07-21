@@ -1,0 +1,16 @@
+version: '3.4'
+
+services:
+  grasindo.api.products:
+    image: grasindo.api.products
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 5000:8080
+    networks: 
+      - grasindo.api
+
+
+networks: 
+  grasindo.api:

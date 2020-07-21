@@ -15,5 +15,5 @@ func main() {
 		ctx.JSON(iris.Map{"message": "pong"})
 	})
 
-	app.Listen(":8080")
+	app.Listen("0.0.0.0:8080")
 }

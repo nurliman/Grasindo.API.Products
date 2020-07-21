@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  grasindo.api.products:
+    image: grasindo.api.products
+    build: .
+    ports:
+      - 3000
