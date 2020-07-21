@@ -1,28 +1,33 @@
 package main
 
 import (
-	"github.com/nurliman/Grasindo.API.Products/config"
-	"github.com/nurliman/Grasindo.API.Products/routes"
+	"fmt"
+	"log"
+	"net"
 
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"github.com/nurliman/Grasindo.API.Products/protos"
+
+	"google.golang.org/grpc"
 )
-
-var err error
 
 func main() {
 
-	config.DB, err = gorm.Open("postgres", config.DBConfigBuilder())
+	fmt.Println("Products Service starting")
 
+	lis, err := net.Listen("tcp", ":9000")
 	if err != nil {
-		panic("Failed to connect to database!")
+		log.Fatalf("failed to listen: %v", err)
 	}
 
-	defer config.DB.Close()
+	fmt.Println("on port", 9000)
 
-	config.DB.AutoMigrate()
+	s := protos.Server{}
 
-	router := routes.SetupRouter()
+	grpcServer := grpc.NewServer()
 
-	router.Run()
+	protos.RegisterProductsServiceServer(grpcServer, &s)
+
+	if err := grpcServer.Serve(lis); err != nil {
+		log.Fatalf("failed to serve: %s", err)
+	}
 }
