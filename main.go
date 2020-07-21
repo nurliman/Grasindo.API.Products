@@ -1,33 +1,15 @@
 package main
 
 import (
-	"fmt"
-	"log"
-	"net"
-
-	"github.com/nurliman/Grasindo.API.Products/protos"
-
-	"google.golang.org/grpc"
+	"github.com/kataras/iris/v12"
 )
 
 func main() {
+	app := iris.Default()
 
-	fmt.Println("Products Service starting")
+	app.Handle("GET", "/ping", func(ctx iris.Context) {
+		ctx.JSON(iris.Map{"message": "pong"})
+	})
 
-	lis, err := net.Listen("tcp", ":9000")
-	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
-	}
-
-	fmt.Println("on port", 9000)
-
-	s := protos.Server{}
-
-	grpcServer := grpc.NewServer()
-
-	protos.RegisterProductsServiceServer(grpcServer, &s)
-
-	if err := grpcServer.Serve(lis); err != nil {
-		log.Fatalf("failed to serve: %s", err)
-	}
+	app.Listen(":8080")
 }
