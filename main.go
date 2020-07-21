@@ -1,6 +1,7 @@
 package main
 
 import (
+	"net/http"
 	"github.com/nurliman/Grasindo.API.Products/routes"
 
 	"github.com/kataras/iris/v12"
@@ -15,5 +16,7 @@ func main() {
 		ctx.JSON(iris.Map{"message": "pong"})
 	})
 
-	app.Listen("0.0.0.0:8080")
+
+	server := &http.Server{Addr:"0.0.0.0:55551"}
+	app.Run(iris.Server(server))
 }

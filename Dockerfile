@@ -11,7 +11,7 @@ RUN go install -v ./...
 FROM debian:10.4-slim
 #RUN apk --no-cache add ca-certificates
 COPY --from=builder /go/bin /app
-ENTRYPOINT ./app
+ENTRYPOINT /app/Grasindo.API.Products
 LABEL Name=grasindo.api.products Version=0.0.1
-EXPOSE 8080
+EXPOSE 55551
 RUN /app/Grasindo.API.Products
