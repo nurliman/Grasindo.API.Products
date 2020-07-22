@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/nurliman/Grasindo.API.Products/config"
+	"github.com/nurliman/Grasindo.API.Products/models"
 	"github.com/nurliman/Grasindo.API.Products/routes"
 
 	"github.com/jinzhu/gorm"
@@ -16,6 +17,12 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	config.DB.AutoMigrate(
+		&models.Brand{},
+		&models.Product{},
+		&models.Collection{},
+	)
 
 	app := iris.Default()
 
