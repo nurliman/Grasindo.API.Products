@@ -33,14 +33,14 @@ func (dbConfig *DBConfig) Build() string {
 
 // DBConfigBuilder Create string of postgres gorm configuration
 func DBConfigBuilder() string {
-	if os.Getenv("DB_HOST")==nil{
-		os.Setenv("DB_HOST")="127.0.0.1"
+	if os.Getenv("DB_HOST") == "" {
+		os.Setenv("DB_HOST", "127.0.0.1")
 	}
-	if os.Getenv("DB_PORT")==nil{
-		os.Setenv("DB_PORT")="5432"
+	if os.Getenv("DB_PORT") == "" {
+		os.Setenv("DB_PORT", "5432")
 	}
-	if os.Getenv("DB_USER")==nil{
-		os.Setenv("DB_USER")="postgres"
+	if os.Getenv("DB_USER") == "" {
+		os.Setenv("DB_USER", "postgres")
 	}
 	dbConfig := DBConfig{
 		Host:     os.Getenv("DB_HOST"),

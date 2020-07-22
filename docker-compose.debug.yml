@@ -7,13 +7,15 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "80:1337"
+      - "8080:1337"
     networks:
       - grasindo.api
     environment:
       DB_NAME: grasindo_products
       DB_USER: mypgadmin
       DB_PASS: password
+    depends_on:
+      - db
 
 
   db:

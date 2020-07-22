@@ -6,9 +6,11 @@ import (
 	"github.com/nurliman/Grasindo.API.Products/routes"
 
 	"github.com/jinzhu/gorm"
-	"github.com/kataras/iris/v12"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"github.com/kataras/iris/v12"
 )
+
+var err error
 
 func main() {
 	config.DB, err = gorm.Open("postgres", config.DBConfigBuilder())
