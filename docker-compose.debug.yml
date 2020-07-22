@@ -2,25 +2,26 @@ version: '3.4'
 
 services:
   grasindo.api.products:
+    container_name: grasindo.api.products
     image: grasindo.api.products
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "1337:1337"
+      - "1337"
     networks:
       - grasindo.api
     environment:
+      DB_HOST: db
       DB_NAME: grasindo_products
       DB_USER: mypgadmin
       DB_PASS: password
-    volumes:
-      - go-modules:/go/pkg/mod 
     depends_on:
       - db
 
 
   db:
+    container_name: db
     image: postgres:12.3-alpine
     restart: always
     environment:
@@ -31,16 +32,26 @@ services:
       - grasindo.api
 
   adminer:
+    container_name: adminer
     image: adminer
     restart: always
     ports:
-      - 8080:8080
+      - "8080"
     networks:
       - grasindo.api
 
+  reverse-proxy:
+    container_name: nginx
+    image: nginx:stable
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - grasindo.api
+    depends_on:
+      - "grasindo.api.products"
+      - adminer
 
-volumes:
-  go-modules: # Define the volume
-  
 networks: 
   grasindo.api:

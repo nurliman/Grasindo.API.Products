@@ -22,7 +22,7 @@ type DBConfig struct {
 // Build = build string of postgres gorm configuration
 func (dbConfig *DBConfig) Build() string {
 	return fmt.Sprintf(
-		"host=%s port=%s user=%s dbname=%s password=%s",
+		"host=%s port=%s user=%s dbname=%s password=%s sslmode=disable",
 		dbConfig.Host,
 		dbConfig.Port,
 		dbConfig.User,

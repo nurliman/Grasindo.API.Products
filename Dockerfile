@@ -1,20 +1,17 @@
 
 #build stage
 FROM golang:1.14.6 AS builder
-ENV GOPROXY=https://goproxy.io,https://proxy.golang.org,direct
+ENV GOPROXY=https://goproxy.io,https://gocenter.io,direct
 ENV GO111MODULE=on
 WORKDIR /go/src/app
 COPY go.mod . 
 COPY go.sum .
-VOLUME [ "go-modules:/go/pkg/mod" ]
 RUN go mod download -x
 COPY . .
-RUN go get -d -v ./...
-RUN go install -v ./...
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go install -a -installsuffix cgo -v ./...
 
 #final stage
 FROM debian:10.4-slim
-#RUN apk --no-cache add ca-certificates
 COPY --from=builder /go/bin /app
 COPY ./wait-for-it.sh /app/wait-for-it.sh
 RUN chmod +x /app/wait-for-it.sh
