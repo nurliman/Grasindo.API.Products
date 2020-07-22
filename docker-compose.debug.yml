@@ -14,12 +14,14 @@ services:
       DB_NAME: grasindo_products
       DB_USER: mypgadmin
       DB_PASS: password
+    volumes:
+      - go-modules:/go/pkg/mod 
     depends_on:
       - db
 
 
   db:
-    image: postgres:12.3
+    image: postgres:12.3-alpine
     restart: always
     environment:
       POSTGRES_DB: grasindo_products
@@ -37,6 +39,8 @@ services:
       - grasindo.api
 
 
-
+volumes:
+  go-modules: # Define the volume
+  
 networks: 
   grasindo.api:
