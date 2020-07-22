@@ -16,13 +16,5 @@ func main() {
 		ctx.JSON(iris.Map{"message": "pong"})
 	})
 
-
-	// create any custom tcp listener, unix sock file or tls tcp listener.
-	// l, err := net.Listen("tcp4", "0.0.0.0:8080")
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	// use of the custom listener.
-	app.Listen("0.0.0.0:8080")
+	app.Listen("0.0.0.0:1337")
 }

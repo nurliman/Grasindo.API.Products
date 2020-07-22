@@ -6,10 +6,33 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    expose: 
-      - "8080"
     ports:
-      - "1337:8080"
+      - "80:1337"
+    networks:
+      - grasindo.api
+    environment:
+      DB_NAME: grasindo_products
+      DB_USER: mypgadmin
+      DB_PASS: password
+
+
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: grasindo_products
+      POSTGRES_USER: mypgadmin
+      POSTGRES_PASSWORD: password
+    networks:
+      - grasindo.api
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 80:8080
+    networks:
+      - grasindo.api
 
 
 
