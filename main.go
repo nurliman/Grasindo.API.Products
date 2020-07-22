@@ -2,12 +2,20 @@ package main
 
 import (
 	//"net"
+	"github.com/nurliman/Grasindo.API.Products/config"
 	"github.com/nurliman/Grasindo.API.Products/routes"
 
+	"github.com/jinzhu/gorm"
 	"github.com/kataras/iris/v12"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
 func main() {
+	config.DB, err = gorm.Open("postgres", config.DBConfigBuilder())
+	if err != nil {
+		panic(err)
+	}
+
 	app := iris.Default()
 
 	routes.SetupRouter(app)
