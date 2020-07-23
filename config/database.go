@@ -5,13 +5,17 @@ import (
 	"os"
 
 	"github.com/jinzhu/gorm"
+	"github.com/nurliman/Grasindo.API.Products/models"
 )
 
 // DB containts information for current DB connection
-var DB *gorm.DB
+var (
+	DB  *gorm.DB
+	err error
+)
 
 // DBConfig represents db configuration
-type DBConfig struct {
+type dbConfig struct {
 	Host     string
 	Port     string
 	User     string
@@ -19,20 +23,8 @@ type DBConfig struct {
 	Password string
 }
 
-// Build = build string of postgres gorm configuration
-func (dbConfig *DBConfig) Build() string {
-	return fmt.Sprintf(
-		"host=%s port=%s user=%s dbname=%s password=%s sslmode=disable",
-		dbConfig.Host,
-		dbConfig.Port,
-		dbConfig.User,
-		dbConfig.DBName,
-		dbConfig.Password,
-	)
-}
-
-// DBConfigBuilder Create string of postgres gorm configuration
-func DBConfigBuilder() string {
+// build = build string of postgres gorm configuration
+func build() string {
 	if os.Getenv("DB_HOST") == "" {
 		os.Setenv("DB_HOST", "127.0.0.1")
 	}
@@ -42,7 +34,7 @@ func DBConfigBuilder() string {
 	if os.Getenv("DB_USER") == "" {
 		os.Setenv("DB_USER", "postgres")
 	}
-	dbConfig := DBConfig{
+	db := &dbConfig{
 		Host:     os.Getenv("DB_HOST"),
 		Port:     os.Getenv("DB_PORT"),
 		User:     os.Getenv("DB_USER"),
@@ -50,5 +42,32 @@ func DBConfigBuilder() string {
 		Password: os.Getenv("DB_PASS"),
 	}
 
-	return dbConfig.Build()
+	return fmt.Sprintf(
+		"host=%s port=%s user=%s dbname=%s password=%s sslmode=disable",
+		db.Host,
+		db.Port,
+		db.User,
+		db.DBName,
+		db.Password,
+	)
+}
+
+// DBInit initialize database
+func DBInit() {
+	DB, err = gorm.Open("postgres", build())
+	if err != nil {
+		panic(err)
+	}
+
+	migrate()
+}
+
+func migrate() {
+	defer DB.Close()
+
+	DB.AutoMigrate(
+		&models.Brand{},
+		&models.Product{},
+		&models.Collection{},
+	)
 }

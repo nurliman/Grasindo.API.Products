@@ -2,10 +2,8 @@ package main
 
 import (
 	"github.com/nurliman/Grasindo.API.Products/config"
-	"github.com/nurliman/Grasindo.API.Products/models"
 	"github.com/nurliman/Grasindo.API.Products/routes"
 
-	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/kataras/iris/v12"
 )
@@ -13,16 +11,11 @@ import (
 var err error
 
 func main() {
-	config.DB, err = gorm.Open("postgres", config.DBConfigBuilder())
-	if err != nil {
-		panic(err)
-	}
+	config.DBInit()
 
-	config.DB.AutoMigrate(
-		&models.Brand{},
-		&models.Product{},
-		&models.Collection{},
-	)
+	//v := validator.New()
+
+	//v.RegisterStructValidation(UserStructLevelValidation, models.Brand{})
 
 	app := iris.Default()
 

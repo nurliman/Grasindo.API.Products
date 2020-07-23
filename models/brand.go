@@ -7,8 +7,8 @@ import (
 // Brand data model
 type Brand struct {
 	gorm.Model
-	Name         string    `json:"name" binding:"required"`
+	Name         string    `json:"name" validate:"required"`
 	Description  string    `json:"description"`
-	Products     []Product `json:"products" binding:"dive"`
+	Products     []Product `json:"products" validate:"dive"`
 	OtherDetails string    `json:"otherDetails"`
 }

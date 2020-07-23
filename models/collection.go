@@ -7,8 +7,8 @@ import (
 // Collection of products data model
 type Collection struct {
 	gorm.Model
-	Name         string    `json:"name" binding:"required"`
+	Name         string    `json:"name" validate:"required"`
 	Description  string    `json:"description"`
-	Products     []Product `json:"products" gorm:"many2many:collection_products;" binding:"dive" `
+	Products     []Product `json:"products" gorm:"many2many:collection_products;" validate:"dive" `
 	OtherDetails string    `json:"otherDetails"`
 }

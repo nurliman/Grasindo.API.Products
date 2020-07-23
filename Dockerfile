@@ -1,12 +1,9 @@
 
 #build stage
 FROM golang:1.14.6 AS builder
-ENV GOPROXY=https://goproxy.io,https://gocenter.io,direct
+ENV GOPROXY=https://gocenter.io,https://goproxy.io,direct
 ENV GO111MODULE=on
 WORKDIR /go/src/app
-COPY go.mod . 
-COPY go.sum .
-RUN go mod download -x
 COPY . .
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go install -a -installsuffix cgo -v ./...
 
