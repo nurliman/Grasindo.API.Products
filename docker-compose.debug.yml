@@ -71,6 +71,7 @@ services:
       DB_PASS: password
     depends_on:
       - db
+      - "grasindo.api.products"
 
 volumes: 
   tmp:
