@@ -18,6 +18,8 @@ services:
       DB_PASS: password
     depends_on:
       - db
+    volumes: 
+      - tmp:/tmp
 
 
   db:
@@ -30,6 +32,8 @@ services:
       POSTGRES_PASSWORD: password
     networks:
       - grasindo.api
+    volumes: 
+      - tmp:/tmp
 
   adminer:
     container_name: adminer
@@ -52,6 +56,24 @@ services:
     depends_on:
       - "grasindo.api.products"
       - adminer
+
+  seeder:
+    build:
+      context: ./../Grasindo.API.Seeder
+      dockerfile: Dockerfile
+    container_name: seeder_db
+    networks: 
+      - grasindo.api
+    environment:
+      DB_HOST: db
+      DB_NAME: grasindo_products
+      DB_USER: mypgadmin
+      DB_PASS: password
+    depends_on:
+      - db
+
+volumes: 
+  tmp:
 
 networks: 
   grasindo.api:

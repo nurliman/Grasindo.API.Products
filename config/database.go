@@ -59,15 +59,10 @@ func DBInit() {
 		panic(err)
 	}
 
-	migrate()
-}
-
-func migrate() {
-	defer DB.Close()
-
 	DB.AutoMigrate(
 		&models.Brand{},
 		&models.Product{},
 		&models.Collection{},
 	)
+
 }
