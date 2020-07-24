@@ -75,6 +75,7 @@ func EditBrand(ctx iris.Context) {
 	id, _ := ctx.Params().GetUint("id")
 
 	if err := config.DB.
+		Select("id").
 		Where("id = ?", id).
 		First(&brand).
 		Error; err != nil {
@@ -101,4 +102,27 @@ func EditBrand(ctx iris.Context) {
 	}
 
 	_, _ = ctx.JSON(APIResponse(true, &brand, "Brand Updated!"))
+}
+
+// DeleteBrand delete a brand
+func DeleteBrand(ctx iris.Context) {
+	var brand models.Brand
+	id, _ := ctx.Params().GetUint("id")
+
+	if err := config.DB.
+		Select("id").
+		Where("id = ?", id).
+		First(&brand).
+		Error; err != nil {
+		ctx.StatusCode(GetErrorStatus(err))
+		_, _ = ctx.JSON(APIResponse(false, nil, err.Error()))
+		return
+	}
+
+	if err := config.DB.Delete(&brand).Error; err != nil {
+		ctx.StatusCode(GetErrorStatus(err))
+		_, _ = ctx.JSON(APIResponse(false, nil, err.Error()))
+	}
+
+	_, _ = ctx.JSON(APIResponse(true, iris.Map{"deleted": true}, "Brand Deleted!"))
 }

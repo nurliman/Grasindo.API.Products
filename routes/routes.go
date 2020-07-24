@@ -17,5 +17,6 @@ func SetupRouter(app *iris.Application) {
 		brands.Get("/", controllers.GetBrands)
 		brands.Get("/{id:uint}", controllers.GetBrand)
 		brands.Put("/{id:uint}", controllers.EditBrand)
+		brands.Delete("/{id:uint}", controllers.DeleteBrand)
 	})
 }
