@@ -18,8 +18,6 @@ services:
       DB_PASS: password
     depends_on:
       - db
-    volumes: 
-      - tmp:/tmp
 
 
   db:
@@ -32,8 +30,6 @@ services:
       POSTGRES_PASSWORD: password
     networks:
       - grasindo.api
-    volumes: 
-      - tmp:/tmp
 
   adminer:
     container_name: adminer
@@ -73,8 +69,6 @@ services:
       - db
       - "grasindo.api.products"
 
-volumes: 
-  tmp:
-
+      
 networks: 
   grasindo.api:
