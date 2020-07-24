@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"github.com/fatih/structs"
 	"github.com/kataras/iris/v12"
 	"github.com/nurliman/Grasindo.API.Products/config"
 	"github.com/nurliman/Grasindo.API.Products/models"
@@ -8,20 +9,28 @@ import (
 
 // AddBrand add new brand
 func AddBrand(ctx iris.Context) {
-	brandJSON := new(models.Brand)
+	brandInput := new(models.BrandInput)
 
-	if err := ctx.ReadJSON(brandJSON); err != nil {
+	if err := ctx.ReadJSON(brandInput); err != nil {
 		ctx.StatusCode(iris.StatusBadRequest)
 		_, _ = ctx.JSON(APIResponse(false, nil, err.Error()))
 		return
 	}
 
-	if err := config.DB.Create(&brandJSON).Error; err != nil {
+	brand := &models.Brand{
+		Name:         brandInput.Name,
+		Description:  brandInput.Description,
+		OtherDetails: brandInput.OtherDetails,
+	}
+
+	if err := config.DB.Create(brand).Error; err != nil {
+		ctx.StatusCode(iris.StatusBadRequest)
 		_, _ = ctx.JSON(APIResponse(false, nil, err.Error()))
 		return
 	}
 
-	_, _ = ctx.JSON(APIResponse(true, brandJSON, "Brand Added!"))
+	ctx.StatusCode(iris.StatusCreated)
+	_, _ = ctx.JSON(APIResponse(true, brand, "Brand Added!"))
 }
 
 // GetBrands get brands
@@ -43,8 +52,8 @@ func GetBrands(ctx iris.Context) {
 	_, _ = ctx.JSON(APIResponse(true, &brands, "Here your Brands!"))
 }
 
-// GetBrandByID give brand id return brand info
-func GetBrandByID(ctx iris.Context) {
+// GetBrand return brand info by giving brand id
+func GetBrand(ctx iris.Context) {
 	var brand models.Brand
 	id, _ := ctx.Params().GetUint("id")
 
@@ -58,4 +67,38 @@ func GetBrandByID(ctx iris.Context) {
 	}
 
 	_, _ = ctx.JSON(APIResponse(true, &brand, "Here your Brand!"))
+}
+
+// EditBrand edit brand by id
+func EditBrand(ctx iris.Context) {
+	var brand models.Brand
+	id, _ := ctx.Params().GetUint("id")
+
+	if err := config.DB.
+		Where("id = ?", id).
+		First(&brand).
+		Error; err != nil {
+		ctx.StatusCode(GetErrorStatus(err))
+		_, _ = ctx.JSON(APIResponse(false, nil, err.Error()))
+		return
+	}
+
+	brandInput := new(models.BrandInput)
+
+	if err := ctx.ReadJSON(brandInput); err != nil {
+		ctx.StatusCode(iris.StatusBadRequest)
+		_, _ = ctx.JSON(APIResponse(false, nil, err.Error()))
+		return
+	}
+
+	if err := config.DB.
+		Model(&brand).
+		Updates(structs.Map(brandInput)).
+		Error; err != nil {
+		ctx.StatusCode(GetErrorStatus(err))
+		_, _ = ctx.JSON(APIResponse(false, nil, err.Error()))
+		return
+	}
+
+	_, _ = ctx.JSON(APIResponse(true, &brand, "Brand Updated!"))
 }

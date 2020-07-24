@@ -15,6 +15,7 @@ func SetupRouter(app *iris.Application) {
 	v1.PartyFunc("/brands", func(brands iris.Party) {
 		brands.Post("/", controllers.AddBrand)
 		brands.Get("/", controllers.GetBrands)
-		brands.Get("/{id:uint}", controllers.GetBrandByID)
+		brands.Get("/{id:uint}", controllers.GetBrand)
+		brands.Put("/{id:uint}", controllers.EditBrand)
 	})
 }

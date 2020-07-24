@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"errors"
 	"net/http"
 
 	"github.com/jinzhu/gorm"
@@ -29,7 +28,7 @@ func APIResponse(status bool, objects interface{}, msg string) (r *Response) {
 
 // GetErrorStatus give error and return http status code
 func GetErrorStatus(err error) int {
-	if ok := errors.Is(err, gorm.ErrRecordNotFound); !ok && err != nil {
+	if gorm.IsRecordNotFoundError(err) {
 		return http.StatusNotFound
 	}
 
