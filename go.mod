@@ -4,6 +4,7 @@ go 1.14
 
 require (
 	github.com/Joker/hpp v1.0.0 // indirect
+	github.com/fatih/structs v1.1.0
 	github.com/go-playground/validator/v10 v10.3.0
 	github.com/golang/protobuf v1.4.2
 	github.com/jinzhu/gorm v1.9.15
