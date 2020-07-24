@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/nurliman/Grasindo.API.Products/config"
+	"github.com/nurliman/Grasindo.API.Products/models"
 	"github.com/nurliman/Grasindo.API.Products/routes"
 
 	"github.com/go-playground/validator/v10"
@@ -14,6 +15,12 @@ var err error
 func main() {
 	// Database connection initialization
 	config.DBInit()
+
+	config.DB.AutoMigrate(
+		&models.Brand{},
+		&models.Product{},
+		&models.Collection{},
+	)
 
 	// validator instances initialization
 	v := validator.New()

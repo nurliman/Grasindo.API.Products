@@ -5,7 +5,6 @@ import (
 	"os"
 
 	"github.com/jinzhu/gorm"
-	"github.com/nurliman/Grasindo.API.Products/models"
 )
 
 // DB containts information for current DB connection
@@ -58,11 +57,5 @@ func DBInit() {
 	if err != nil {
 		panic(err)
 	}
-
-	DB.AutoMigrate(
-		&models.Brand{},
-		&models.Product{},
-		&models.Collection{},
-	)
 
 }
