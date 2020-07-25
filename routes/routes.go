@@ -22,12 +22,14 @@ func SetupRouter(app *iris.Application) {
 		brands.PartyFunc("/{brandID:uint}/products", func(products iris.Party) {
 			products.Post("/", controllers.AddProduct)
 			products.Get("/", controllers.GetProducts)
+			products.Get("/{productID:uint}", controllers.GetProduct)
 		})
 	})
 
 	v1.PartyFunc("/products", func(products iris.Party) {
 		products.Post("/", controllers.AddProduct)
 		products.Get("/", controllers.GetProducts)
+		products.Get("/{productID:uint}", controllers.GetProduct)
 	})
 
 }

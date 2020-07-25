@@ -24,6 +24,10 @@ func AddProduct(ctx iris.Context) {
 		brandID = brandIDPath
 	} else if brandIDBody > 0 {
 		brandID = brandIDBody
+	} else {
+		ctx.StatusCode(iris.StatusBadRequest)
+		_, _ = ctx.JSON(APIResponse(false, nil, "brandID must provided in JSON body"))
+		return
 	}
 
 	var brand models.Brand
@@ -51,7 +55,7 @@ func AddProduct(ctx iris.Context) {
 	}
 
 	ctx.StatusCode(iris.StatusCreated)
-	_, _ = ctx.JSON(APIResponse(true, product, "Brand Added!"))
+	_, _ = ctx.JSON(APIResponse(true, product, "Product Added!"))
 }
 
 // GetProducts get products
@@ -80,5 +84,39 @@ func GetProducts(ctx iris.Context) {
 		return
 	}
 
-	_, _ = ctx.JSON(APIResponse(true, &products, "Here your Brands!"))
+	_, _ = ctx.JSON(APIResponse(true, &products, "Here your Products!"))
+}
+
+// GetProduct get a product by id
+func GetProduct(ctx iris.Context) {
+	var product models.Product
+	productID, _ := ctx.Params().GetUint("productID")
+	brandIDPath, _ := ctx.Params().GetUint("brandID")
+
+	db := config.DB
+
+	if brandIDPath > 0 {
+		var brand models.Brand
+		if err := config.DB.
+			Select("id").
+			Where("id = ?", brandIDPath).
+			First(&brand).
+			Error; err != nil {
+			ctx.StatusCode(GetErrorStatus(err))
+			_, _ = ctx.JSON(APIResponse(false, nil, err.Error()))
+			return
+		}
+		db = db.Where("brand_id = ?", brandIDPath)
+	}
+
+	if err := db.
+		Where("id = ?", productID).
+		First(&product).
+		Error; err != nil {
+		ctx.StatusCode(GetErrorStatus(err))
+		_, _ = ctx.JSON(APIResponse(false, nil, err.Error()))
+		return
+	}
+
+	_, _ = ctx.JSON(APIResponse(true, &product, "Here your Brand!"))
 }
