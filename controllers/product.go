@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"github.com/fatih/structs"
 	"github.com/kataras/iris/v12"
 	"github.com/nurliman/Grasindo.API.Products/config"
 	"github.com/nurliman/Grasindo.API.Products/models"
@@ -16,7 +17,7 @@ func AddProduct(ctx iris.Context) {
 		return
 	}
 
-	var brandID uint = 0
+	var brandID uint
 	brandIDPath, _ := ctx.Params().GetUint("brandID")
 	brandIDBody := productInput.BrandID
 
@@ -110,6 +111,7 @@ func GetProduct(ctx iris.Context) {
 	}
 
 	if err := db.
+		Preload("Brand").
 		Where("id = ?", productID).
 		First(&product).
 		Error; err != nil {
@@ -118,5 +120,71 @@ func GetProduct(ctx iris.Context) {
 		return
 	}
 
-	_, _ = ctx.JSON(APIResponse(true, &product, "Here your Brand!"))
+	_, _ = ctx.JSON(APIResponse(true, &product, "Here your Product!"))
+}
+
+// EditProduct edit brand by id
+func EditProduct(ctx iris.Context) {
+
+	brandIDPath, _ := ctx.Params().GetUint("brandID")
+	db := config.DB
+
+	if brandIDPath > 0 {
+		var brand models.Brand
+		if err := config.DB.
+			Select("id").
+			Where("id = ?", brandIDPath).
+			First(&brand).
+			Error; err != nil {
+			ctx.StatusCode(GetErrorStatus(err))
+			_, _ = ctx.JSON(APIResponse(false, nil, err.Error()))
+			return
+		}
+		db = db.Where("brand_id = ?", brandIDPath)
+	}
+
+	var product models.Product
+	productID, _ := ctx.Params().GetUint("productID")
+
+	if err := db.
+		Preload("Brand").
+		Where("id = ?", productID).
+		First(&product).
+		Error; err != nil {
+		ctx.StatusCode(GetErrorStatus(err))
+		_, _ = ctx.JSON(APIResponse(false, nil, err.Error()))
+		return
+	}
+
+	productInput := new(models.ProductInput)
+	if err := ctx.ReadJSON(productInput); err != nil {
+		ctx.StatusCode(iris.StatusBadRequest)
+		_, _ = ctx.JSON(APIResponse(false, nil, err.Error()))
+		return
+	}
+
+	brandIDBody := productInput.BrandID
+	if brandIDBody > 0 && brandIDBody != product.BrandID {
+		var brand models.Brand
+		if err := config.DB.
+			Where("id = ?", brandIDBody).
+			First(&brand).
+			Error; err != nil {
+			ctx.StatusCode(GetErrorStatus(err))
+			_, _ = ctx.JSON(APIResponse(false, nil, err.Error()))
+			return
+		}
+		product.Brand = brand
+	}
+
+	if err := config.DB.
+		Model(&product).
+		Updates(structs.Map(productInput)).
+		Error; err != nil {
+		ctx.StatusCode(GetErrorStatus(err))
+		_, _ = ctx.JSON(APIResponse(false, nil, err.Error()))
+		return
+	}
+
+	_, _ = ctx.JSON(APIResponse(true, &product, "Product Updated!"))
 }

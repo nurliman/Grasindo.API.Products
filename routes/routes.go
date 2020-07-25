@@ -23,6 +23,7 @@ func SetupRouter(app *iris.Application) {
 			products.Post("/", controllers.AddProduct)
 			products.Get("/", controllers.GetProducts)
 			products.Get("/{productID:uint}", controllers.GetProduct)
+			products.Put("/{productID:uint}", controllers.EditProduct)
 		})
 	})
 
@@ -30,6 +31,7 @@ func SetupRouter(app *iris.Application) {
 		products.Post("/", controllers.AddProduct)
 		products.Get("/", controllers.GetProducts)
 		products.Get("/{productID:uint}", controllers.GetProduct)
+		products.Put("/{productID:uint}", controllers.EditProduct)
 	})
 
 }
