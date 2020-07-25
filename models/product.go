@@ -12,7 +12,7 @@ type Product struct {
 	Description  string  `json:"description" gorm:"size:255"`
 	OtherDetails string  `json:"otherDetails" gorm:"size:255"`
 	Brand        Brand   `json:"brand" gorm:"association_autoupdate:false;association_autocreate:false"`
-	BrandID      uint `json:"-"`
+	BrandID      uint    `json:"-"`
 }
 
 // ProductInput data model
@@ -21,5 +21,5 @@ type ProductInput struct {
 	Code         *string `json:"code" validate:"required"`
 	Description  string  `json:"description"`
 	OtherDetails string  `json:"otherDetails"`
-	BrandID      uint	`json:"brandId"`
+	BrandID      uint    `json:"brandID"`
 }

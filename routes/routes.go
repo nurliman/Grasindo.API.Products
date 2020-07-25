@@ -15,11 +15,11 @@ func SetupRouter(app *iris.Application) {
 	v1.PartyFunc("/brands", func(brands iris.Party) {
 		brands.Post("/", controllers.AddBrand)
 		brands.Get("/", controllers.GetBrands)
-		brands.Get("/{brandId:uint}", controllers.GetBrand)
-		brands.Put("/{brandId:uint}", controllers.EditBrand)
-		brands.Delete("/{brandId:uint}", controllers.DeleteBrand)
+		brands.Get("/{brandID:uint}", controllers.GetBrand)
+		brands.Put("/{brandID:uint}", controllers.EditBrand)
+		brands.Delete("/{brandID:uint}", controllers.DeleteBrand)
 
-		brands.PartyFunc("/{brandId:uint}/products", func(products iris.Party) {
+		brands.PartyFunc("/{brandID:uint}/products", func(products iris.Party) {
 			products.Post("/", controllers.AddProduct)
 			products.Get("/", controllers.GetProducts)
 		})

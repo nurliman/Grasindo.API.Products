@@ -16,19 +16,19 @@ func AddProduct(ctx iris.Context) {
 		return
 	}
 
-	var brandId uint = 0
-	brandIdPath, _ := ctx.Params().GetUint("brandId")
-	brandIdBody := productInput.BrandID
-	
-	if  brandIdPath > 0 {
-		brandId = brandIdPath
-	} else if brandIdBody >0 {
-		brandId = brandIdBody
+	var brandID uint = 0
+	brandIDPath, _ := ctx.Params().GetUint("brandID")
+	brandIDBody := productInput.BrandID
+
+	if brandIDPath > 0 {
+		brandID = brandIDPath
+	} else if brandIDBody > 0 {
+		brandID = brandIDBody
 	}
-		
+
 	var brand models.Brand
 	if err := config.DB.
-		Where("id = ?", brandId).
+		Where("id = ?", brandID).
 		First(&brand).
 		Error; err != nil {
 		ctx.StatusCode(GetErrorStatus(err))
@@ -65,12 +65,13 @@ func GetProducts(ctx iris.Context) {
 
 	query := GetAll(name, orderBy, offset, limit, sort)
 
-	brandIdPath, _ := ctx.Params().GetUint("brandId")
-	brandIdQuery := ctx.URLParamIntDefault("brandId",0)
-	if  brandIdPath > 0 {
-		query = query.Where("brand_id = ?", brandIdPath)
-	} else if brandIdQuery > 0 {
-		query = query.Where("brand_id = ?", brandIdQuery)
+	brandIDPath, _ := ctx.Params().GetUint("brandID")
+	brandIDQuery := ctx.URLParamIntDefault("brandID", 0)
+
+	if brandIDPath > 0 {
+		query = query.Where("brand_id = ?", brandIDPath)
+	} else if brandIDQuery > 0 {
+		query = query.Where("brand_id = ?", brandIDQuery)
 	}
 
 	if err := query.Preload("Brand").Find(&products).Error; err != nil {

@@ -55,10 +55,10 @@ func GetBrands(ctx iris.Context) {
 // GetBrand return brand info by giving brand id
 func GetBrand(ctx iris.Context) {
 	var brand models.Brand
-	brandId, _ := ctx.Params().GetUint("brandId")
+	brandID, _ := ctx.Params().GetUint("brandID")
 
 	if err := config.DB.
-		Where("id = ?", brandId).
+		Where("id = ?", brandID).
 		First(&brand).
 		Error; err != nil {
 		ctx.StatusCode(GetErrorStatus(err))
@@ -72,11 +72,11 @@ func GetBrand(ctx iris.Context) {
 // EditBrand edit brand by id
 func EditBrand(ctx iris.Context) {
 	var brand models.Brand
-	brandId, _ := ctx.Params().GetUint("brandId")
+	brandID, _ := ctx.Params().GetUint("brandID")
 
 	if err := config.DB.
 		Select("id").
-		Where("id = ?", brandId).
+		Where("id = ?", brandID).
 		First(&brand).
 		Error; err != nil {
 		ctx.StatusCode(GetErrorStatus(err))
@@ -107,11 +107,11 @@ func EditBrand(ctx iris.Context) {
 // DeleteBrand delete a brand
 func DeleteBrand(ctx iris.Context) {
 	var brand models.Brand
-	brandId, _ := ctx.Params().GetUint("brandId")
+	brandID, _ := ctx.Params().GetUint("brandID")
 
 	if err := config.DB.
 		Select("id").
-		Where("id = ?", brandId).
+		Where("id = ?", brandID).
 		First(&brand).
 		Error; err != nil {
 		ctx.StatusCode(GetErrorStatus(err))
