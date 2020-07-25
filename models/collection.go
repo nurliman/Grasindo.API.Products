@@ -12,3 +12,9 @@ type Collection struct {
 	Products     []Product `json:"products" gorm:"many2many:collection_products;" validate:"dive" `
 	OtherDetails string    `json:"otherDetails" gorm:"size:255"`
 }
+
+// BrandCollection Collection to specific Brand
+type BrandCollection struct {
+	Collection
+	BrandID uint `json:"brandID"`
+}

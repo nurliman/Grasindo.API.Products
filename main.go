@@ -20,6 +20,7 @@ func main() {
 		&models.Brand{},
 		&models.Product{},
 		&models.Collection{},
+		&models.BrandCollection{},
 	)
 
 	// validator instances initialization
