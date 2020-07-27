@@ -13,7 +13,7 @@ services:
       - grasindo.api
     environment:
       DB_HOST: db
-      DB_NAME: grasindo_products
+      DB_NAME: products
       DB_USER: mypgadmin
       DB_PASS: password
     depends_on:
@@ -25,7 +25,7 @@ services:
     image: postgres:12.3-alpine
     restart: always
     environment:
-      POSTGRES_DB: grasindo_products
+      POSTGRES_DB: products
       POSTGRES_USER: mypgadmin
       POSTGRES_PASSWORD: password
     networks:
@@ -62,7 +62,6 @@ services:
       - grasindo.api
     environment:
       DB_HOST: db
-      DB_NAME: grasindo_products
       DB_USER: mypgadmin
       DB_PASS: password
     depends_on:
