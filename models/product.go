@@ -11,7 +11,7 @@ type Product struct {
 	Code         *string `json:"code" gorm:"size:30;unique_index;not null" validate:"required"`
 	Description  string  `json:"description" gorm:"size:255"`
 	OtherDetails string  `json:"otherDetails" gorm:"size:255"`
-	Brand        Brand   `json:"brand" gorm:"association_autoupdate:false;association_autocreate:false"`
+	Brand        Brand   `json:"brand" gorm:"foreignkey:BrandID;association_autoupdate:false;association_autocreate:false"`
 	BrandID      uint    `json:"brandID"`
 }
 

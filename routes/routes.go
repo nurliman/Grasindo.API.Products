@@ -26,6 +26,10 @@ func SetupRouter(app *iris.Application) {
 			products.Put("/{productID:uint}", controllers.EditProduct)
 			products.Delete("/{productID:uint}", controllers.DeleteProduct)
 		})
+
+		brands.PartyFunc("/{brandID:uint}/collections", func(brandCollections iris.Party) {
+			brandCollections.Post("/", controllers.AddBrandCollection)
+		})
 	})
 
 	v1.PartyFunc("/products", func(products iris.Party) {
