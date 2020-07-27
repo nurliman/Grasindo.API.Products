@@ -188,3 +188,43 @@ func EditProduct(ctx iris.Context) {
 
 	_, _ = ctx.JSON(APIResponse(true, &product, "Product Updated!"))
 }
+
+// DeleteProduct delete a product
+func DeleteProduct(ctx iris.Context) {
+	var product models.Product
+	productID, _ := ctx.Params().GetUint("productID")
+	brandIDPath, _ := ctx.Params().GetUint("brandID")
+
+	db := config.DB
+
+	if brandIDPath > 0 {
+		var brand models.Brand
+		if err := config.DB.
+			Select("id").
+			Where("id = ?", brandIDPath).
+			First(&brand).
+			Error; err != nil {
+			ctx.StatusCode(GetErrorStatus(err))
+			_, _ = ctx.JSON(APIResponse(false, nil, err.Error()))
+			return
+		}
+		db = db.Where("brand_id = ?", brandIDPath)
+	}
+
+	if err := config.DB.
+		Select("id").
+		Where("id = ?", productID).
+		First(&product).
+		Error; err != nil {
+		ctx.StatusCode(GetErrorStatus(err))
+		_, _ = ctx.JSON(APIResponse(false, nil, err.Error()))
+		return
+	}
+
+	if err := config.DB.Delete(&product).Error; err != nil {
+		ctx.StatusCode(GetErrorStatus(err))
+		_, _ = ctx.JSON(APIResponse(false, nil, err.Error()))
+	}
+
+	_, _ = ctx.JSON(APIResponse(true, iris.Map{"deleted": true}, "Product Deleted!"))
+}

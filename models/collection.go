@@ -16,5 +16,6 @@ type Collection struct {
 // BrandCollection Collection to specific Brand
 type BrandCollection struct {
 	Collection
-	BrandID uint `json:"brandID"`
+	Products []Product `json:"products" gorm:"many2many:brand_collection_products;" validate:"dive" `
+	BrandID  uint      `json:"brandID"`
 }
