@@ -38,9 +38,9 @@ func GetBrands(ctx iris.Context) {
 	var brands []*models.Brand
 	offset := ctx.URLParamIntDefault("offset", 1)
 	limit := ctx.URLParamIntDefault("limit", 15)
+	orderBy := ctx.URLParamDefault("orderBy", "id")
+	sort := ctx.URLParamDefault("sort", "")
 	name := ctx.URLParam("name")
-	orderBy := ctx.URLParam("orderBy")
-	sort := ctx.URLParam("sort")
 
 	query := GetAll(name, orderBy, offset, limit, sort)
 	if err := query.Find(&brands).Error; err != nil {

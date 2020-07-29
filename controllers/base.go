@@ -38,19 +38,24 @@ func GetErrorStatus(err error) int {
 // GetAll reusable func
 func GetAll(string, orderBy string, offset, limit int, sort string) *gorm.DB {
 	db := config.DB
+
 	if len(orderBy) > 0 {
 		db = db.Order(orderBy + " " + sort)
 	} else {
 		db = db.Order("created_at desc")
 	}
+
 	if len(string) > 0 {
 		db = db.Where("name LIKE  ?", "%"+string+"%")
 	}
-	if offset > 0 {
-		db = db.Offset((offset - 1) * limit)
-	}
+
 	if limit > 0 {
 		db = db.Limit(limit)
 	}
+
+	if offset > 0 {
+		db = db.Offset(offset)
+	}
+
 	return db
 }

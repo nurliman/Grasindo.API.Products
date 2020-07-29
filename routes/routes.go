@@ -29,6 +29,7 @@ func SetupRouter(app *iris.Application) {
 
 		brands.PartyFunc("/{brandID:uint}/collections", func(brandCollections iris.Party) {
 			brandCollections.Post("/", controllers.AddBrandCollection)
+			brandCollections.Get("/", controllers.GetBrandCollections)
 		})
 	})
 

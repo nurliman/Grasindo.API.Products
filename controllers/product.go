@@ -62,11 +62,11 @@ func AddProduct(ctx iris.Context) {
 // GetProducts get products
 func GetProducts(ctx iris.Context) {
 	var products []*models.Product
-	offset := ctx.URLParamIntDefault("offset", 1)
+	offset := ctx.URLParamIntDefault("offset", 0)
 	limit := ctx.URLParamIntDefault("limit", 15)
+	orderBy := ctx.URLParamDefault("orderBy", "id")
+	sort := ctx.URLParamDefault("sort", "")
 	name := ctx.URLParam("name")
-	orderBy := ctx.URLParam("orderBy")
-	sort := ctx.URLParam("sort")
 
 	query := GetAll(name, orderBy, offset, limit, sort)
 
