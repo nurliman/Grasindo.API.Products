@@ -32,6 +32,7 @@ func SetupRouter(app *iris.Application) {
 			brandCollections.Get("/", controllers.GetBrandCollections)
 			brandCollections.Get("/{brandCollectionID:uint}", controllers.GetBrandCollection)
 			brandCollections.Put("/{brandCollectionID:uint}", controllers.EditBrandCollection)
+			brandCollections.Delete("/{brandCollectionID:uint}", controllers.DeleteBrandCollection)
 
 			brandCollections.Get("/{brandCollectionID:uint}/products", controllers.GetBrandCollectionProducts)
 		})

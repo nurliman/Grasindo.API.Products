@@ -167,6 +167,31 @@ func EditBrandCollection(ctx iris.Context) {
 	_, _ = ctx.JSON(APIResponse(true, &brandCollection, "Collection Updated!"))
 }
 
+// DeleteBrandCollection delete a Brand's Collection
+func DeleteBrandCollection(ctx iris.Context) {
+	var brandCollection models.BrandCollection
+	brandCollectionID, _ := ctx.Params().GetUint("brandCollectionID")
+	brandID, _ := ctx.Params().GetUint("brandID")
+
+	if err := config.DB.
+		Select("id, brand_id").
+		Where("brand_id = ?", brandID).
+		Where("id = ?", brandCollectionID).
+		First(&brandCollection).
+		Error; err != nil {
+		ctx.StatusCode(GetErrorStatus(err))
+		_, _ = ctx.JSON(APIResponse(false, nil, err.Error()))
+		return
+	}
+
+	if err := config.DB.Delete(&brandCollection).Error; err != nil {
+		ctx.StatusCode(GetErrorStatus(err))
+		_, _ = ctx.JSON(APIResponse(false, nil, err.Error()))
+	}
+
+	_, _ = ctx.JSON(APIResponse(true, iris.Map{"deleted": true}, "Product Deleted!"))
+}
+
 // GetBrandCollectionProducts get products of brandCollection
 func GetBrandCollectionProducts(ctx iris.Context) {
 	offset := ctx.URLParamIntDefault("offset", 0)
