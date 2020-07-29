@@ -94,3 +94,61 @@ func GetBrandCollections(ctx iris.Context) {
 
 	_, _ = ctx.JSON(APIResponse(true, &brandCollections, "Here your Collections!"))
 }
+
+// GetBrandCollection Get a brand's collection
+func GetBrandCollection(ctx iris.Context) {
+	var brandCollection models.BrandCollection
+	brandCollectionID, _ := ctx.Params().GetUint("brandCollectionID")
+	brandIDPath, _ := ctx.Params().GetUint("brandID")
+
+	if err := config.DB.
+		Preload("Brand").
+		Where("brand_id = ?", brandIDPath).
+		Where("id = ?", brandCollectionID).
+		First(&brandCollection).
+		Error; err != nil {
+		ctx.StatusCode(GetErrorStatus(err))
+		_, _ = ctx.JSON(APIResponse(false, nil, err.Error()))
+		return
+	}
+
+	_, _ = ctx.JSON(APIResponse(true, &brandCollection, "Here your Collection!"))
+}
+
+// GetBrandCollectionProducts get products of brandCollection
+func GetBrandCollectionProducts(ctx iris.Context) {
+	offset := ctx.URLParamIntDefault("offset", 0)
+	limit := ctx.URLParamIntDefault("limit", 15)
+	orderBy := ctx.URLParamDefault("orderBy", "id")
+	sort := ctx.URLParamDefault("sort", "")
+	name := ctx.URLParam("name")
+
+	var brandCollection models.BrandCollection
+	var products []models.Product
+	brandCollectionID, _ := ctx.Params().GetUint("brandCollectionID")
+	brandID, _ := ctx.Params().GetUint("brandID")
+
+	if err := config.DB.
+		Select("id, brand_id").
+		Where("brand_id = ?", brandID).
+		Where("id = ?", brandCollectionID).
+		First(&brandCollection).
+		Error; err != nil {
+		ctx.StatusCode(GetErrorStatus(err))
+		_, _ = ctx.JSON(APIResponse(false, nil, err.Error()))
+		return
+	}
+
+	query := GetAll(name, orderBy, offset, limit, sort)
+	if err := query.
+		Model(&brandCollection).
+		Preload("Brand").
+		Related(&products, "Products").
+		Error; err != nil {
+		ctx.StatusCode(GetErrorStatus(err))
+		_, _ = ctx.JSON(APIResponse(false, nil, err.Error()))
+		return
+	}
+
+	_, _ = ctx.JSON(APIResponse(true, &products, "Here your Products!"))
+}
