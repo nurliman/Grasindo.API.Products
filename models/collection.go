@@ -30,4 +30,5 @@ type CollectionInput struct {
 	Description  string `json:"description"`
 	Products     []int  `json:"products" validate:"required,min=1,unique"`
 	OtherDetails string `json:"otherDetails"`
+	BrandID      uint   `json:"brandID"`
 }

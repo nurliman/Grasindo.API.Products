@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"github.com/fatih/structs"
 	"github.com/kataras/iris/v12"
 	"github.com/nurliman/Grasindo.API.Products/config"
 	"github.com/nurliman/Grasindo.API.Products/models"
@@ -9,11 +10,11 @@ import (
 // AddBrandCollection add collection to brand
 func AddBrandCollection(ctx iris.Context) {
 
-	brandIDPath, _ := ctx.Params().GetUint("brandID")
+	brandID, _ := ctx.Params().GetUint("brandID")
 	var brand models.Brand
 
 	if err := config.DB.
-		Where("id = ?", brandIDPath).
+		Where("id = ?", brandID).
 		First(&brand).
 		Error; err != nil {
 		ctx.StatusCode(GetErrorStatus(err))
@@ -79,12 +80,12 @@ func GetBrandCollections(ctx iris.Context) {
 	sort := ctx.URLParamDefault("sort", "")
 	name := ctx.URLParam("name")
 
-	brandIDPath, _ := ctx.Params().GetUint("brandID")
+	brandID, _ := ctx.Params().GetUint("brandID")
 
 	query := GetAll(name, orderBy, offset, limit, sort)
 	if err := query.
 		Preload("Brand").
-		Where("brand_id = ?", brandIDPath).
+		Where("brand_id = ?", brandID).
 		Find(&brandCollections).
 		Error; err != nil {
 		ctx.StatusCode(GetErrorStatus(err))
@@ -99,11 +100,11 @@ func GetBrandCollections(ctx iris.Context) {
 func GetBrandCollection(ctx iris.Context) {
 	var brandCollection models.BrandCollection
 	brandCollectionID, _ := ctx.Params().GetUint("brandCollectionID")
-	brandIDPath, _ := ctx.Params().GetUint("brandID")
+	brandID, _ := ctx.Params().GetUint("brandID")
 
 	if err := config.DB.
 		Preload("Brand").
-		Where("brand_id = ?", brandIDPath).
+		Where("brand_id = ?", brandID).
 		Where("id = ?", brandCollectionID).
 		First(&brandCollection).
 		Error; err != nil {
@@ -113,6 +114,57 @@ func GetBrandCollection(ctx iris.Context) {
 	}
 
 	_, _ = ctx.JSON(APIResponse(true, &brandCollection, "Here your Collection!"))
+}
+
+// EditBrandCollection edit brand's collection
+func EditBrandCollection(ctx iris.Context) {
+
+	var brandCollection models.BrandCollection
+	brandCollectionID, _ := ctx.Params().GetUint("brandCollectionID")
+	brandID, _ := ctx.Params().GetUint("brandID")
+
+	if err := config.DB.
+		Preload("Brand").
+		Where("brand_id = ?", brandID).
+		Where("id = ?", brandCollectionID).
+		First(&brandCollection).
+		Error; err != nil {
+		ctx.StatusCode(GetErrorStatus(err))
+		_, _ = ctx.JSON(APIResponse(false, nil, err.Error()))
+		return
+	}
+
+	collectionInput := new(models.CollectionInput)
+	if err := ctx.ReadJSON(collectionInput); err != nil {
+		ctx.StatusCode(iris.StatusBadRequest)
+		_, _ = ctx.JSON(APIResponse(false, nil, err.Error()))
+		return
+	}
+
+	newBrandID := collectionInput.BrandID
+	if newBrandID > 0 && newBrandID != brandCollection.BrandID {
+		var brand models.Brand
+		if err := config.DB.
+			Where("id = ?", newBrandID).
+			First(&brand).
+			Error; err != nil {
+			ctx.StatusCode(GetErrorStatus(err))
+			_, _ = ctx.JSON(APIResponse(false, nil, err.Error()))
+			return
+		}
+		brandCollection.Brand = brand
+	}
+
+	if err := config.DB.
+		Model(&brandCollection).
+		Updates(structs.Map(collectionInput)).
+		Error; err != nil {
+		ctx.StatusCode(GetErrorStatus(err))
+		_, _ = ctx.JSON(APIResponse(false, nil, err.Error()))
+		return
+	}
+
+	_, _ = ctx.JSON(APIResponse(true, &brandCollection, "Collection Updated!"))
 }
 
 // GetBrandCollectionProducts get products of brandCollection
